@@ -11,11 +11,11 @@ async function objective2 (context, config) {
   // const jiraCheck = pr_description.includes("Collaborators: (AppEngine| Engine|AppExtension|Extension)")
   let willMerge = true;
 
-  // console.log("~~~~~~>>>>>>>",collabCheck);
-  // console.log("~~~~~~>>>>>>>",deployCheck);
-  // console.log("~~~~~~>>>>>>>",jiraCheck);
-  // console.log("~~~~~~>>>>>>>",thingsToTest);
-  let bot_description = "";
+  console.log("~~~~~~>>>>>>>",collabCheck);
+  console.log("~~~~~~>>>>>>>",deployCheck);
+  console.log("~~~~~~>>>>>>>",jiraCheck);
+  console.log("~~~~~~>>>>>>>",thingsToTest);
+  let bot_description = "success";
 
   if(!deployCheck) {
     willMerge = false;
@@ -33,8 +33,10 @@ async function objective2 (context, config) {
     willMerge = false;
     bot_description = "Things to test not present " 
   }
- // if()
-  const state = willMerge ? 'success' : 'pending'
+
+console.log("~~~~~~>>>>>>>",bot_description);
+
+  const state = willMerge ? 'success' : 'failed'
 
   const status = {
     sha: head.sha,

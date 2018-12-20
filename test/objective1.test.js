@@ -12,15 +12,18 @@ describe('objective_one', () => {
       expect(typeof objective_one).toBe('function')
     })
 
-    test('failure test for prequests before making a PR', async () => {
+
+    //******************Incorrect deployment group present
+    test('Incorrect deployment group present', async () => {
       const context = buildContext()
-      context.payload.pull_request.body = 'JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \
+      context.payload.pull_request.body = 'Things to be tested:Backend\
+      JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \
       Collaborators: akash \
-      Deployment Type: AppEngine'
+      Deployment Type: hiver'
       const expectedBody = {
         state: 'pending',
         target_url: 'https://github.com/puneetbing',
-        description: 'Things to test not present ',
+        description: 'Deployment group not present ',
         context: 'Pull Request Tests'
       }
   
@@ -34,9 +37,60 @@ describe('objective_one', () => {
       expect(mock.isDone()).toBe(false)
     })
 
-    test('failure test for prequests before making a PR', async () => {
+
+    //******************No Deployment group name present
+    test('No Deployment group name present', async () => {
       const context = buildContext()
-      context.payload.pull_request.body = 'Things to be tested:Backend \
+      context.payload.pull_request.body = 'Things to be tested:Backend\
+      JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \
+      Collaborators: akash '
+      const expectedBody = {
+        state: 'pending',
+        target_url: 'https://github.com/puneetbing',
+        description: 'Deployment group not present ',
+        context: 'Pull Request Tests'
+      }
+  
+      const mock = nock('https://api.github.com')
+        .get('/repos/sally/project-x/pulls/123/commits')
+        .reply(200, unsemanticCommits())
+        .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
+        .reply(200)
+  
+      await objective_one(context)
+      expect(mock.isDone()).toBe(false)
+    })
+
+
+    //******************Collaborators not present
+    test('Collaborators not present', async () => {
+      const context = buildContext()
+      context.payload.pull_request.body = 'Things to be tested:Backend\
+      JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 '
+      const expectedBody = {
+        state: 'pending',
+        target_url: 'https://github.com/puneetbing',
+        description: 'Collaborators not present ',
+        context: 'Pull Request Tests'
+      }
+  
+      const mock = nock('https://api.github.com')
+        .get('/repos/sally/project-x/pulls/123/commits')
+        .reply(200, unsemanticCommits())
+        .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
+        .reply(200)
+  
+      await objective_one(context)
+      expect(mock.isDone()).toBe(false)
+    })
+
+
+
+    //******************Incorrect JIRA Link
+    test('Incorrect JIRA Link', async () => {
+      const context = buildContext()
+      context.payload.pull_request.body = 'Things to be tested:Backend\
+      JIRA URL: https://www.w3schools.com \
       Collaborators: akash \
       Deployment Type: AppEngine'
       const expectedBody = {
@@ -56,8 +110,57 @@ describe('objective_one', () => {
       expect(mock.isDone()).toBe(false)
     })
 
+
+    //******************No Things to be tested present
+    test('No Things to be tested TEST', async () => {
+      const context = buildContext()
+      context.payload.pull_request.body = '\
+      JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \
+      Collaborators: akash \
+      Deployment Type: AppEngine'
+      const expectedBody = {
+        state: 'pending',
+        target_url: 'https://github.com/puneetbing',
+        description: 'Things to test not present ',
+        context: 'Pull Request Tests'
+      }
   
-    test('success for prequests before making a PR', async () => {
+      const mock = nock('https://api.github.com')
+        .get('/repos/sally/project-x/pulls/123/commits')
+        .reply(200, unsemanticCommits())
+        .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
+        .reply(200)
+  
+      await objective_one(context)
+      expect(mock.isDone()).toBe(false)
+    })
+
+    //******************No JIRA LINK
+    test('No JIRA LINK', async () => {
+      const context = buildContext()
+      context.payload.pull_request.body = 'Things to be tested:Backend \
+      Collaborators: akash \
+      Deployment Type: AppEngine'
+      const expectedBody = {
+        state: 'pending',
+        target_url: 'https://github.com/puneetbing',
+        description: 'Jira link not present',
+        context: 'Pull Request Tests'
+      }
+  
+      const mock = nock('https://api.github.com')
+        .get('/repos/sally/project-x/pulls/123/commits')
+        .reply(200, unsemanticCommits())
+        .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
+        .reply(200)
+  
+      await objective_one(context)
+
+      expect(mock.isDone()).toBe(false)
+    })
+
+    //******************All passed
+    test('All passed', async () => {
       const context = buildContext()
       context.payload.pull_request.body = 'Things to be tested:Backend \
       JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \

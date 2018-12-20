@@ -15,6 +15,7 @@ async function checkJira (context, config) {
   // console.log("~~~~~~>>>>>>>",deployCheck);
   // console.log("~~~~~~>>>>>>>",jiraCheck);
   // console.log("~~~~~~>>>>>>>",thingsToTest);
+
   let botDescription = "success";
 
   if(!deployCheck) {
@@ -33,6 +34,7 @@ async function checkJira (context, config) {
     willMerge = false;
     botDescription = "Things to test not present " 
   }
+// console.log("~~botDescription~~~~>>>>>>>",botDescription);
  // if()
   const state = willMerge ? 'success' : 'pending'
 
