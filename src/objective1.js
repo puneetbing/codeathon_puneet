@@ -1,37 +1,37 @@
 module.exports = checkJira
 
 async function checkJira (context, config) {
-  const pr_description = context.payload.pull_request.body
+  const prDescription = context.payload.pull_request.body
   const head = context.payload.pull_request.head
-  // console.log("~~~~~~>>>>>>>",pr_description)
-  const collabCheck = pr_description.match(/Collaborators:\s?(\w,?)+/g)
-  const deployCheck = pr_description.match(/Deployment Type:\s?(AppEngine| Engine|AppExtension|Extension)/g)
-  const jiraCheck = pr_description.match(/JIRA URL:\s?https:\/\/hiverhq\.atlassian\.net\/browse\/ENGG-\d+/)
-  const thingsToTest = pr_description.match(/Things to be tested:\s?.+/g)
-  // const jiraCheck = pr_description.includes("Collaborators: (AppEngine| Engine|AppExtension|Extension)")
+  // console.log("~~~~~~>>>>>>>",prDescription)
+  const collabCheck = prDescription.match(/Collaborators:\s?(\w,?)+/g)
+  const deployCheck = prDescription.match(/Deployment Type:\s?(AppEngine| Engine|AppExtension|Extension)/g)
+  const jiraCheck = prDescription.match(/JIRA URL:\s?https:\/\/hiverhq\.atlassian\.net\/browse\/ENGG-\d+/)
+  const thingsToTest = prDescription.match(/Things to be tested:\s?.+/g)
+  // const jiraCheck = prDescription.includes("Collaborators: (AppEngine| Engine|AppExtension|Extension)")
   let willMerge = true;
 
   // console.log("~~~~~~>>>>>>>",collabCheck);
   // console.log("~~~~~~>>>>>>>",deployCheck);
   // console.log("~~~~~~>>>>>>>",jiraCheck);
   // console.log("~~~~~~>>>>>>>",thingsToTest);
-  let bot_description = "";
+  let botDescription = "success";
 
   if(!deployCheck) {
     willMerge = false;
-    bot_description = "Deployment group not present " 
+    botDescription = "Deployment group not present " 
   }
   if(!collabCheck) {
     willMerge = false;
-    bot_description = "Collaborators not present " 
+    botDescription = "Collaborators not present " 
   }
   if(!jiraCheck) {
     willMerge = false;
-    bot_description = "Jira link not present" 
+    botDescription = "Jira link not present" 
   }
   if(!thingsToTest) {
     willMerge = false;
-    bot_description = "Things to test not present " 
+    botDescription = "Things to test not present " 
   }
  // if()
   const state = willMerge ? 'success' : 'pending'
@@ -40,7 +40,7 @@ async function checkJira (context, config) {
     sha: head.sha,
     state,
     target_url: 'https://github.com/puneetbing',
-    description: bot_description,
+    description: botDescription,
     context: 'Pull Request Tests'
   }
 

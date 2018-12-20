@@ -12,6 +12,29 @@ describe('objective_one', () => {
       expect(typeof objective_one).toBe('function')
     })
   
+  // test('sets `pending` status if PR has title with WIP', async () => {
+  //   const context = buildContext()
+  //   context.payload.pull_request.title = 'WIP: do a thing'
+  //   const expectedBody = {
+  //     state: 'pending',
+  //     target_url: 'https://github.com/anuragmaher',
+  //     // description: 'WIP present check',
+  //     context: 'Pull Request Tests'
+  //   }
+
+  //   const mock = nock('https://api.github.com')
+  //     .get('/repos/sally/project-x/pulls/123/commits')
+  //     .reply(200, unsemanticCommits())
+  //     .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
+  //     .reply(200)
+
+  //   await handlePullRequestChange(context)
+  //   expect(mock.isDone()).toBe(false)
+  // })
+
+
+
+
     test('success for prequests before making a PR', async () => {
       const context = buildContext()
       context.payload.pull_request.body = 'Things to be tested:Backend \
@@ -19,32 +42,9 @@ describe('objective_one', () => {
       Collaborators: akash \
       Deployment Type: AppEngine'
       const expectedBody = {
-        state: 'pending',
-        target_url: 'https://github.com/puneetbing',
-        description: 'Success',
-        context: 'Pull Request Tests'
-      }
-  
-      const mock = nock('https://api.github.com')
-        .get('/repos/sally/project-x/pulls/123/commits')
-        .reply(200, unsemanticCommits())
-        .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
-        .reply(200)
-  
-      await handlePullRequestChange(context)
-      expect(mock.isDone()).toBe(false)
-    })
-  
-    test('failure for prequests before making a PR', async () => {
-      const context = buildContext()
-      context.payload.pull_request.body = '\
-      JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \
-      Collaborators: akash \
-      Deployment Type: appEngine'
-      const expectedBody = {
         state: 'success',
         target_url: 'https://github.com/puneetbing',
-        description: 'Things to test not present ',
+        description: 'success',
         context: 'Pull Request Tests'
       }
   
@@ -54,9 +54,33 @@ describe('objective_one', () => {
         .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
         .reply(200)
   
-      await handlePullRequestChange(context)
+      await objective_one(context)
       expect(mock.isDone()).toBe(false)
     })
+
+  
+    // test('failure for prequests before making a PR', async () => {
+    //   const context = buildContext()
+    //   context.payload.pull_request.description = 'Things to be tested:Backend \
+    //   JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \
+    //   Collaborators: akash \
+    //   Deployment Type: appEngine'
+    //   const expectedBody = {
+    //     state: 'success',
+    //     target_url: 'https://github.com/puneetbing',
+    //     description: 'WIP present check',
+    //     context: 'Pull Request Tests'
+    //   }
+  
+    //   const mock = nock('https://api.github.com')
+    //     .get('/repos/sally/project-x/pulls/123/commits')
+    //     .reply(200, unsemanticCommits())
+    //     .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
+    //     .reply(200)
+  
+    //   await handlePullRequestChange(context)
+    //   expect(mock.isDone()).toBe(false)
+    // })
   })
   
   function buildContext (overrides) {
