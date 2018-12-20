@@ -34,6 +34,28 @@ describe('objective_one', () => {
       expect(mock.isDone()).toBe(false)
     })
 
+    test('failure test for prequests before making a PR', async () => {
+      const context = buildContext()
+      context.payload.pull_request.body = 'Things to be tested:Backend \
+      Collaborators: akash \
+      Deployment Type: AppEngine'
+      const expectedBody = {
+        state: 'pending',
+        target_url: 'https://github.com/puneetbing',
+        description: 'Jira link not present',
+        context: 'Pull Request Tests'
+      }
+  
+      const mock = nock('https://api.github.com')
+        .get('/repos/sally/project-x/pulls/123/commits')
+        .reply(200, unsemanticCommits())
+        .post('/repos/sally/project-x/statuses/abcdefg', expectedBody)
+        .reply(200)
+  
+      await objective_one(context)
+      expect(mock.isDone()).toBe(false)
+    })
+
   
     test('success for prequests before making a PR', async () => {
       const context = buildContext()
