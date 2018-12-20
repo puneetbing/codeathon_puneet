@@ -1,3 +1,7 @@
+[![Coverage Status](https://coveralls.io/repos/github/puneetbing/codeathon_puneet/badge.svg?branch=master)](https://coveralls.io/github/puneetbing/codeathon_puneet?branch=master)
+[![Build Status](https://travis-ci.org/puneetbing/codeathon_puneet.svg?branch=master)](https://travis-ci.org/puneetbing/codeathon_puneet)
+
+
 # akky_punnu
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that This is a test app

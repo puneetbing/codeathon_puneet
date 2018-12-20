@@ -14,14 +14,14 @@ describe('objective_one', () => {
   
     test('success for prequests before making a PR', async () => {
       const context = buildContext()
-      context.payload.pull_request.description = 'Things to be tested:Backend \
+      context.payload.pull_request.body = 'Things to be tested:Backend \
       JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \
       Collaborators: akash \
-      Deployment Type: appEngine'
+      Deployment Type: AppEngine'
       const expectedBody = {
         state: 'pending',
         target_url: 'https://github.com/puneetbing',
-        description: 'WIP present check',
+        description: 'Success',
         context: 'Pull Request Tests'
       }
   
@@ -37,14 +37,14 @@ describe('objective_one', () => {
   
     test('failure for prequests before making a PR', async () => {
       const context = buildContext()
-      context.payload.pull_request.description = 'Things to be tested:Backend \
+      context.payload.pull_request.body = '\
       JIRA URL: https://hiverhq.atlassian.net/browse/ENGG-1194 \
       Collaborators: akash \
       Deployment Type: appEngine'
       const expectedBody = {
         state: 'success',
         target_url: 'https://github.com/puneetbing',
-        description: 'WIP present check',
+        description: 'Things to test not present ',
         context: 'Pull Request Tests'
       }
   
